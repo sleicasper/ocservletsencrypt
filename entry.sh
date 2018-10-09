@@ -1,5 +1,4 @@
 #!/bin/sh
-#!/bin/sh
 
 
 # Open ipv4 ip forward
@@ -14,12 +13,14 @@ mkdir -p /dev/net
 mknod /dev/net/tun c 10 200
 chmod 600 /dev/net/tun
 
-/updatecert.sh &
-if [ -f /etc/letsencrypt/archive/$DOMAIN_NAME/fullchain1.pem ];then
-	echo cert exist
-else
+while true
+do
+	if [ -f /etc/letsencrypt/archive/$DOMAIN_NAME/fullchain1.pem ];then
+		echo cert exist
+	else
+		certbot certonly --standalone --email $EMAIL_ADDRESS -d $DOMAIN_NAME --user-agent "" --agree-tos --noninteractive --text --verbose --debug
+	fi
+
+	timeout 86400s ocserv -c /etc/ocserv/ocserv.conf -f
 	certbot certonly --standalone --email $EMAIL_ADDRESS -d $DOMAIN_NAME --user-agent "" --agree-tos --noninteractive --text --verbose --debug
-fi
-
-ocserv -c /etc/ocserv/ocserv.conf -f
-
+done

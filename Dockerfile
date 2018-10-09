@@ -48,9 +48,7 @@ COPY Route /etc/ocserv/config-per-group/Route
 
 EXPOSE 80
 EXPOSE 443
-COPY updatecert.sh /updatecert.sh
 COPY entry.sh /entry.sh
-RUN chmod +x /updatecert.sh
 RUN chmod +x /entry.sh
 ENTRYPOINT ["/entry.sh"]
 
